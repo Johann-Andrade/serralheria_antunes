@@ -5,16 +5,24 @@ h1,h2,h3{
     margin: 0;
 }
 body{
-    background-color: #a0764b;
+    background-color: #aaaaaa;
     margin: 4vh;
+}
+a{
+    text-decoration: inherit;
+    color: inherit;
+    width: 100%;
 }
 .pablo{
     border: solid black 1vh;
     display: block;
     padding: 2vh;
-    text-decoration: none;
-    color: black;
     background: white;
+    width: 100%;
+    box-sizing: border-box;
+}
+.pablo:hover{
+    cursor: pointer;
 }
 .titulo{
     text-decoration: underline;
@@ -49,4 +57,7 @@ body{
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 1vh;
     margin-top: 2vh;
+}
+#table{
+    width: 100%;
 }

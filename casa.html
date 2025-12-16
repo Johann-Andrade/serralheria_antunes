@@ -7,84 +7,250 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 class="titulo">casa de seu zé</h1>
+    <h1 id="titulo" class="titulo"></h1>
     <div class="editar">
-        <input type="text" value="casa de seu zé">
+        <label for="editnome_input">Nome da casa:</label>
+        <input id="editnome_input" type="text" >
         <br>
-        <button>atualizar casa</button>
-        <button>deletar casa</button>
-        <a href="index.html">
-            <button>VOLTAR</button>
-        </a>
+        <button id="editar-casa-btn">atualizar casa</button>
+        <button onclick="deletarCasa()" id="deletar-casa-btn">deletar casa</button>
+        <button onclick="window.history.back();">VOLTAR</button>
     </div>
     <div class="adiciona">
         <h2>Adicionar obra:</h2>
-        <input type="text" placeholder="nome da obra"><br>
-        <input type="datetime" placeholder="data de inicio da obra"><br>
-        <input type="datetime" placeholder="data de termino da obra"><br>
-        <input type="number" placeholder="valor da obra"> <br>
-        <input type="number" placeholder="pessoas que trabalharam na obra">
+        <label for="nome_obra">Nome da obra:</label>
+        <input id="nome_obra" type="text" placeholder="nome"><br>
+        <label for="inicio_obra">Início da obra:</label>
+        <input id="inicio_obra" type="date"><br>
+        <label for="fim_obra">Término da obra:</label>
+        <input id="fim_obra" type="date"><br>
+        <label for="valor_obra">Valor da obra:</label>
+        <input id="valor_obra" type="number" placeholder="Quantia em numeros"> <br>
+        <label for="pessoas_obra">Número de pessoas que trabalharam:</label>
+        <input id="pessoas_obra" type="number" placeholder="quantia em numeros">
         <br>
-        <input type="text" placeholder="anotações/materiais">
+        <label for="anota_obra">Anotações e/ou Materiais:</label>
+        <textarea id="anota_obra" style="display: flex; width: 40vh; height: 20vh;" id="" placeholder="anotações/materiais"></textarea>
         <br>
-        <button>adicionar obra</button>
+        <button id="adicionar-btn">adicionar obra</button>
     </div>
-    <input class="pesquisa" type="text" placeholder="pesquisa">
-    <div class="ultragrid">
+    <input class="pesquisa" id="pesquisa_input" type="text" placeholder="pesquisa" oninput="getTHEobra(value)">
+        <!--
         <a class="pablo" href="obra.html">
             <h2>nome: mesa de trabalho</h2>
-            <h3>tempo: 8 dias</h3>
             <h3>inicio: 04/08/2025</h3>
             <h3>termino: 12/08/2025</h3>
             <h3>valor: R$200,00</h3>
             <h3>pessoas: 1</h3>
             <h3>anotações: nada</h3>
         </a>
-        <a class="pablo" href="obra.html">
-            <h2>nome: porta</h2>
-            <h3>tempo: 2 dias</h3>
-            <h3>inicio: 14/08/2025</h3>
-            <h3>termino: 16/08/2025</h3>
-            <h3>valor: R$100,00</h3>
-            <h3>pessoas: 1</h3>
-            <h3>anotações: nada</h3>
-        </a>
-        <a class="pablo" href="obra.html">
-            <h2>nome: mesa de jantar</h2>
-            <h3>tempo: 3 dias</h3>
-            <h3>inicio: 15/08/2025</h3>
-            <h3>termino: 18/08/2025</h3>
-            <h3>valor: R$150,00</h3>
-            <h3>pessoas: 1</h3>
-            <h3>anotações: nada</h3>
-        </a>
-        <a class="pablo" href="obra.html">
-            <h2>nome: cadeira</h2>
-            <h3>tempo: 3 dias</h3>
-            <h3>inicio: 20/08/2025</h3>
-            <h3>termino: 23/08/2025</h3>
-            <h3>valor: R$100,00</h3>
-            <h3>pessoas: 1</h3>
-            <h3>anotações: nada</h3>
-        </a>
-        <a class="pablo" href="obra.html">
-            <h2>nome: cercado</h2>
-            <h3>tempo: 6 dias</h3>
-            <h3>inicio: 23/08/2025</h3>
-            <h3>termino: 29/08/2025</h3>
-            <h3>valor: R$250,00</h3>
-            <h3>pessoas: 1</h3>
-            <h3>anotações: nada</h3>
-        </a>
-        <a class="pablo" href="obra.html">
-            <h2>nome: telhado</h2>
-            <h3>tempo: 10 dias</h3>
-            <h3>inicio: 2/08/2025</h3>
-            <h3>termino: 12/08/2025</h3>
-            <h3>valor: R$500,00</h3>
-            <h3>pessoas: 1</h3>
-            <h3>anotações: nada</h3>
-        </a>
-    </div>
+        -->
+    <table id="table">
+        <tbody class="ultragrid">
+            <!-- Categorias serão inseridas aqui dinamicamente -->
+        </tbody>
+    </table>
+    <script>
+        const apiUrl = 'http://localhost:8000/api/';
+        var casaID = localStorage.getItem("casaid");
+        var obrasdacasa = []
+        const casa_nome_edit = document.getElementById("editnome_input")
+        // Inicialização da página
+        document.addEventListener('DOMContentLoaded', () => {
+            getCasa(casaID)
+            getObras()
+
+            // Enviar formulário sem recarregar a página
+            document.getElementById('editar-casa-btn').addEventListener('click', (event) => {
+                editarCasa(event);
+            });
+            document.getElementById('adicionar-btn').addEventListener('click', (event) => {
+                criarObra(event);
+            });
+        });
+        async function getCasa(id) {
+            try {
+                const response = await fetch(apiUrl + 'casas/' + id + '/');
+                const casa = await response.json();
+
+                const nome_titulo = document.getElementById("titulo")
+                nome_titulo.innerHTML = `${casa.nome}`
+                casa_nome_edit.value = `${casa.nome}`
+
+            } catch (error) {
+                console.error('Erro ao carregar casa:', error);
+            }
+        }
+        
+        async function editarCasa(event) {
+            event.preventDefault();
+            const nome = casa_nome_edit.value
+
+            const fd = new FormData();
+            fd.append('nome', nome);
+
+            try {
+                const response = await fetch(apiUrl + 'casas/' + casaID + '/', {
+                    method: 'PUT',
+                    body: fd
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao atualizar casa');
+                }
+
+                const casaAtualizada = await response.json();
+                console.log('casa atualizada com sucesso:', casaAtualizada);
+
+                getCasa(casaID);
+
+            } catch (error) {
+                console.error('Erro ao atualizar casa:', error);
+                alert('Erro ao atualizar casa');
+            }
+        }
+        async function deletarCasa() {
+            const confirmDelete = confirm("Você tem certeza que deseja excluir esta casa? todas as obras relacionadas também serão excluídas");
+            if (!confirmDelete) return;
+            
+            try {
+                const response = await fetch(apiUrl + 'casas/' + casaID + '/', {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir casa');
+                }
+
+                window.location.replace("http://localhost:5500/index.html");
+            } catch (error) {
+                console.error('Erro ao excluir casa:', error);
+                alert('Erro ao excluir casa!');
+            }
+        }
+        function trocapag(ide) {
+            window.location.href = 'http://localhost:5500/obra.html'
+            localStorage.setItem("obraid", ide);  
+            
+        }
+        function obarasdecasa(obra) {
+            return obra.casa.id == casaID
+            
+        }
+        async function getObras() {
+            try {
+                
+                const response = await fetch(apiUrl + 'obras/');
+                const obras = await response.json();
+                obrasdacasa = obras.filter(obarasdecasa);
+                
+
+                const tbody = document.getElementById('table').getElementsByTagName('tbody')[0];
+                tbody.innerHTML = ''; // Limpar antes de adicionar as novas obras
+                
+
+                obrasdacasa.forEach(obra => {
+                    const tr = document.createElement('tr');
+                    tr.className = "pablo"
+                    tr.value = obra.id
+                    tr.addEventListener("click", function(){
+                        trocapag(tr.value)
+                    })
+                    tr.innerHTML = `
+                        <td>
+                            <h2>nome: ${obra.nome}</h2>
+                            <h3>inicio: ${obra.inicio}</h3>
+                            <h3>termino: ${obra.termino}</h3>
+                            <h3>valor: R$${obra.valor}</h3>
+                            <h3>pessoas: ${obra.pessoas}</h3>
+                            <h3>anotações:<br>
+                                ${obra.anota}
+                            </h3>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar obras:', error);
+            }
+        }
+        async function criarObra(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById('nome_obra').value;
+            const inicio = document.getElementById('inicio_obra').value;
+            const fim = document.getElementById('fim_obra').value;
+            const valor = document.getElementById('valor_obra').value;
+            const pessoas = document.getElementById('pessoas_obra').value;
+            const anota = document.getElementById('anota_obra').value;
+
+            const fd = new FormData();
+            fd.append('casa_id', casaID);
+            fd.append('nome', nome);
+            fd.append('inicio', inicio);
+            fd.append('termino', fim);
+            fd.append('valor', valor);
+            fd.append('pessoas', pessoas);
+            fd.append('anota', anota);
+
+            try {
+                const response = await fetch(apiUrl + 'obras/', {
+                    method: 'POST',
+                    body: fd
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao cadastrar obra');
+                }
+
+                const obraCriada = await response.json();
+                console.log('Obra criada com sucesso:', obraCriada);
+
+                // Atualizar a tabela 
+                getObras();
+            } catch (error) {
+                console.error('Erro ao criar obra:', error);
+                alert('Ocorreu um erro ao criar a obra. Detalhes: ' + error.message);
+            }
+        }
+        async function getTHEobra(nomeobra) {
+            if (nomeobra != "") {
+                try {
+                    let osselecionados = obrasdacasa.filter(obra => obra.nome.includes(nomeobra));
+
+                    const tbody = document.getElementById('table').getElementsByTagName('tbody')[0];
+                    tbody.innerHTML = ''; // Limpar antes de adicionar os novas obras
+
+                    osselecionados.forEach(obra => {
+                        const tr = document.createElement('tr');
+                        tr.className = "pablo"
+                        tr.value = obra.id
+                        tr.addEventListener("click", function(){
+                            trocapag(tr.value)
+                        })
+                        tr.innerHTML = `
+                            <td>
+                                <h2>nome: ${obra.nome}</h2>
+                                <h3>tempo: plaholder*</h3>
+                                <h3>inicio: ${obra.inicio}</h3>
+                                <h3>termino: ${obra.termino}</h3>
+                                <h3>valor: R$${obra.valor}</h3>
+                                <h3>pessoas: ${obra.pessoas}</h3>
+                                <h3>anotações:<br>
+                                    ${obra.anota}
+                                </h3>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } catch (error) {
+                    console.error('Erro ao carregar obras:', error);
+                }
+            } else{
+                getObras()
+                
+            }
+        }
+    </script>
 </body>
 </html>

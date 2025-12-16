@@ -7,38 +7,135 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>mesa de trabalho </h1>
+    <h1 id="titulo">_</h1>
     <div class="editar">
         <div>
-            <label for="nome">Nome:</label>
-            <input id="nome" type="text" value="mesa de trabalho">
+            <label for="editnome_input">Nome da obra:</label>
+            <input id="editnome_input" type="text">
         </div>
         <div>
-            <label for="inicio">Data de Inicio:</label>
-            <input id="inicio" type="datetime" value="04/08/2025">
+            <label for="editinicio_input">Início:</label>
+            <input id="editinicio_input" type="date">
         </div>
         <div>
-            <label for="fim">Data de Fim:</label>
-            <input id="fim" type="datetime" value="06/08/2025">
+            <label for="editfim_input">Término:</label>
+            <input id="editfim_input" type="date">
         </div>
         <div>
-            <label for="valor">Valor:</label>
-            <input id="valor" type="number" value="100">
+            <label for="editvalor_input">Valor:</label>
+            <input id="editvalor_input" type="number">
         </div>
         <div>
-            <label for="pessoas">Quantidade de Pessoas:</label>
-            <input id="pessoas" type="number" value="1">
+            <label for="editpessoas_input">Quantidade de Pessoas:</label>
+            <input id="editpessoas_input" type="number">
         </div>
         <div>
-            <label for="anotacoes">Anotações/Materiais:</label>
-            <input id="anotacoes" type="text" value="nada">
+            <label for="editanotacoes_input">Anotações/Materiais:</label>
+            <textarea style="display: flex; width: 40vh; height: 20vh;" id="editanotacoes_input" type="text"></textarea>
         </div>
         <br>
-        <button>atualizar obra</button>
-        <button>deletar obra</button>
-            <a class="voltar" href="casa.html">
-        <button>VOLTAR</button>
-    </a>
+        <button id="editar-obra-btn">atualizar obra</button>
+        <button onclick="deletarObra()" id="deletar-obra-btn">deletar obra</button>  
+        <button onclick="window.history.back();">VOLTAR</button>
     </div>
+    <script>
+        const apiUrl = 'http://localhost:8000/api/';
+        var obraID = localStorage.getItem("obraid");
+        var casaID = 0
+        const obra_nome_edit = document.getElementById("editnome_input")
+        const obra_incio_edit = document.getElementById("editinicio_input")
+        const obra_fim_edit = document.getElementById("editfim_input")
+        const obra_valor_edit = document.getElementById("editvalor_input")
+        const obra_pessoas_edit = document.getElementById("editpessoas_input")
+        const obra_anotacoes_edit = document.getElementById("editanotacoes_input")
+
+        // Inicialização da página
+        document.addEventListener('DOMContentLoaded', () => {
+            getObra(obraID)
+
+            // Enviar formulário sem recarregar a página
+            document.getElementById('editar-obra-btn').addEventListener('click', (event) => {
+                editarObra(event);
+            });
+        });
+        async function getObra(id) {
+            try {
+                const response = await fetch(apiUrl + 'obras/' + id + '/');
+                const obra = await response.json();
+                casaID = obra.casa.id
+
+                const nome_titulo = document.getElementById("titulo")
+                nome_titulo.innerHTML = `${obra.nome}`
+                obra_nome_edit.value = `${obra.nome}`
+                obra_incio_edit.value = `${obra.inicio}`
+                obra_fim_edit.value = `${obra.termino}`
+                obra_valor_edit.value = `${obra.valor}`
+                obra_pessoas_edit.value = `${obra.pessoas}`
+                obra_anotacoes_edit.value = `${obra.anota}`
+
+            } catch (error) {
+                console.error('Erro ao carregar obra:', error);
+            }
+        }
+        async function editarObra(event) {
+            event.preventDefault();
+            const nome = obra_nome_edit.value
+            const inicio = obra_incio_edit.value
+            const fim = obra_fim_edit.value
+            const valor = obra_valor_edit.value
+            const pessoas = obra_pessoas_edit.value
+            const anota = obra_anotacoes_edit.value
+            
+
+            const fd = new FormData();
+            
+            fd.append('casa_id', casaID);
+            fd.append('nome', nome);
+            fd.append('inicio', inicio);
+            fd.append('termino', fim);
+            fd.append('valor', valor);
+            fd.append('pessoas', pessoas);
+            fd.append('anota', anota);
+
+            try {
+                const response = await fetch(apiUrl + 'obras/' + obraID + '/', {
+                    method: 'PUT',
+                    body: fd
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao atualizar obra');
+                }
+
+                const obraAtualizada = await response.json();
+                console.log('obra atualizada com sucesso:', obraAtualizada);
+
+                getObra(obraID);
+
+            } catch (error) {
+                console.error('Erro ao atualizar obra:', error);
+                alert('Erro ao atualizar obra');
+            }
+        }
+        async function deletarObra() {
+            const confirmDelete = confirm("Você tem certeza que deseja excluir esta obra?");
+            if (!confirmDelete) return;
+            
+            try {
+                const response = await fetch(apiUrl + 'obras/' + obraID + '/', {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir obra');
+                }
+
+                window.location.replace("http://localhost:5500/casa.html");
+            } catch (error) {
+                console.error('Erro ao excluir obra:', error);
+                alert('Erro ao excluir obra!');
+            }
+        }
+    </script>
 </body>
 </html>

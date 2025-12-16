@@ -7,22 +7,146 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1 class="titulo">SERRALHERIA</h1>
+    <h1 class="titulo">SERRALHERIA ANTUNES</h1>
     <div class="adiciona">
         <h2>Adicionar casa:</h2>
-        <input type="text" placeholder="nome da casa"> <br>
+        <label for="nome_casa">Nome da casa:</label>
+        <input id="nome_casa" type="text" placeholder="nome"> <br>
         <button id="adicionar-btn">adicionar casa</button>
     </div>
-    <input class="pesquisa" type="text" placeholder="pesquisa">
-        <!--<a class="pablo" href="casa.html">
+    <input class="pesquisa" id="pesquisa_input" type="text" placeholder="pesquisa" oninput="getTHEcasa(value)">
+        <!--
+            <a class="pablo" href="casa.html">
             <h2>casa: zé</h2>
             <h3>obras feitas: 6</h3>
-        </a>-->
-    <table id="casas-table">
+            </a>
+        -->
+    <table id="table">
         <tbody class="ultragrid">
-            <!-- Categorias serão inseridas aqui dinamicamente -->
+            <!-- Casas serão inseridas aqui dinamicamente -->
         </tbody>
     </table>
-    <script src="js.js"></script>
+    <script>
+        const apiUrl = 'http://localhost:8000/api/';
+        // Inicialização da página
+        document.addEventListener('DOMContentLoaded', () => {
+            getCasas(); // Carregar casas existentes
+
+
+            // Enviar formulário sem recarregar a página
+            document.getElementById('adicionar-btn').addEventListener('click', (event) => {
+                criarCasa(event);
+            });
+        });
+        function trocapag(ide) {
+            window.location.href = 'http://localhost:5500/casa.html'
+            localStorage.setItem("casaid", ide);  
+            
+        }
+
+        // Função para carregar as casas
+        async function getCasas() {
+            try {
+                const responsecasa = await fetch(apiUrl + 'casas/');
+                const casas = await responsecasa.json();
+                const responseobra = await fetch(apiUrl + 'obras/');
+                const obras = await responseobra.json();
+
+
+                const tbody = document.getElementById('table').getElementsByTagName('tbody')[0];
+                tbody.innerHTML = ''; // Limpar antes de adicionar as novas casas
+
+                casas.forEach(casa => {
+                    obradecasa = obras.filter(obra => obra.casa.id == casa.id)
+                    
+                    const tr = document.createElement('tr');
+                    tr.className = "pablo"
+                    tr.value = casa.id
+                    tr.addEventListener("click", function(){
+                        trocapag(tr.value)
+                    })
+                    tr.innerHTML = `
+                        <td>
+                            <h2>casa: ${casa.nome}</h2>
+                            <h3>obras feitas: ${obradecasa.length}</h3>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar casas:', error);
+            }
+        }
+
+        // Função para criar
+        async function criarCasa(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById('nome_casa').value;
+
+            const fd = new FormData();
+            fd.append('nome', nome);
+
+            try {
+                const response = await fetch(apiUrl + 'casas/', {
+                    method: 'POST',
+                    body: fd
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao cadastrar casa');
+                }
+
+                const casaCriada = await response.json();
+                console.log('Casa criada com sucesso:', casaCriada);
+
+                // Atualizar a tabela 
+                getCasas();
+
+                // Limpar o campo
+                document.getElementById('nome_casa').value = '';
+            } catch (error) {
+                console.error('Erro ao criar casa:', error);
+                alert('Ocorreu um erro ao criar a casa. Detalhes: ' + error.message);
+            }
+        }
+        //função de pesquisar
+        async function getTHEcasa(nomecasa) {
+            if (nomecasa != "") {
+                try {
+                    const response = await fetch(apiUrl + 'casas/');
+                    const casas = await response.json();
+                    const osselecionados = casas.filter(casa => casa.nome.includes(nomecasa));
+                    
+                    
+                    
+
+                    const tbody = document.getElementById('table').getElementsByTagName('tbody')[0];
+                    tbody.innerHTML = ''; // Limpar antes de adicionar os novas casas
+
+                    osselecionados.forEach(casa => {
+                        const tr = document.createElement('tr');
+                        tr.className = "pablo"
+                        tr.value = casa.id
+                        tr.addEventListener("click", function(){
+                            trocapag(tr.value)
+                        })
+                        tr.innerHTML = `
+                            <td>
+                                <h2>casa: ${casa.nome}</h2>
+                                <h3>obras feitas: PLACEHOLDER*</h3>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } catch (error) {
+                    console.error('Erro ao carregar casas:', error);
+                }
+            } else{
+                getCasas()
+                
+            }
+        }
+    </script>
 </body>
 </html>
