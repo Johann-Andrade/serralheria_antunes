@@ -1,5 +1,5 @@
 # Abrir o site
-- clique no botão verde escrito "code <>"
+- clique no botão verde escrito "<> code"
 - clique em "download ZIP"
 - descompacte ele na área de trabalho (de preferência)
 - e abra o arquivo "index"
