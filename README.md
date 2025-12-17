@@ -7,7 +7,7 @@
 
 # Ligar o server pela primeira vez
 - instale o python no computador https://www.python.org/downloads/
-- abra o console de comando e digite os comandos abaixo (não digite o que estiver entre aspas)
+- abra o console de comando e digite os comandos abaixo (não digite o que estiver entre aspas e eles devem estar do jeito que estão, então desative a tradução automatica do google)
 - cd desktop "entra na área de trabalho"
 - cd serralheria_antunes-main "entra na pasta do site"
 - cd backend "entra na pasta de beackend"
