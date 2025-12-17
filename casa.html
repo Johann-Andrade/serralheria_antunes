@@ -122,14 +122,14 @@
                     throw new Error('Erro ao excluir casa');
                 }
 
-                window.location.replace("http://localhost:5500/index.html");
+                window.location.replace("index.html");
             } catch (error) {
                 console.error('Erro ao excluir casa:', error);
                 alert('Erro ao excluir casa!');
             }
         }
         function trocapag(ide) {
-            window.location.href = 'http://localhost:5500/obra.html'
+            window.location.href = 'obra.html'
             localStorage.setItem("obraid", ide);  
             
         }
