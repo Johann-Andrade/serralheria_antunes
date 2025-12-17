@@ -18,6 +18,8 @@
 - pip install django djangorestframework "instalação para o server"
 - pip install django-cors-headers "instalação para o server"
 - cd serralheria_api "entra na pasta de configuração do server"
+- python manage.py makemigrations projetos
+- python manage.py migrate
 - python manage.py runserver "faz ele rodar"
 
 # Ligar o server depois da primeira vez
