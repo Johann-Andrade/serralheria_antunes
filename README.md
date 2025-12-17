@@ -1,3 +1,9 @@
+# Abrir o site
+- instale o arquivo compactado de TUDO
+- descompacte ele na área de trabalho (de preferência)
+- e abra o arquivo "index"
+- ligue o server de alguma das duas formas abaixo
+
 # Ligar o server pela primeira vez
 - abra o console de comando
 - cd desktop "entra na area de trabalho"
@@ -11,7 +17,7 @@
 - cd serralheria_api "entra na pasta de configuração do server"
 - python manage.py runserver "faz ele rodar"
 
-# Ligando o server depois da primeira vez
+# Ligar o server depois da primeira vez
 - abra o console de comando
 - cd desktop "entra na area de trabalho"
 - cd serralheria "entra na pasta do site"
