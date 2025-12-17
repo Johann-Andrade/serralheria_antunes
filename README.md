@@ -6,10 +6,12 @@
 - ligue o server de alguma das duas formas abaixo
 
 # Ligar o server pela primeira vez
+- instale o python no computador https://www.python.org/downloads/
 - abra o console de comando
 - cd desktop "entra na area de trabalho"
-- cd serralheria "entra na pasta do site"
+- cd serralheria_antunes-main "entra na pasta do site"
 - cd backend "entra na pasta de beackend"
+- Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
 - python -m venv venv "cria uma nova pasta que serve de server"
 - venv\Scripts\activate "ativa o server"
 - pip install django "instalação para o server"
