@@ -114,8 +114,10 @@
         async function getTHEcasa(nomecasa) {
             if (nomecasa != "") {
                 try {
-                    const response = await fetch(apiUrl + 'casas/');
-                    const casas = await response.json();
+                    const responsecasa = await fetch(apiUrl + 'casas/');
+                    const casas = await responsecasa.json();
+                    const responseobra = await fetch(apiUrl + 'obras/');
+                    const obras = await responseobra.json();
                     const osselecionados = casas.filter(casa => casa.nome.includes(nomecasa));
                     
                     
@@ -125,6 +127,7 @@
                     tbody.innerHTML = ''; // Limpar antes de adicionar os novas casas
 
                     osselecionados.forEach(casa => {
+                        obradecasa = obras.filter(obra => obra.casa.id == casa.id)
                         const tr = document.createElement('tr');
                         tr.className = "pablo"
                         tr.value = casa.id
@@ -134,7 +137,7 @@
                         tr.innerHTML = `
                             <td>
                                 <h2>casa: ${casa.nome}</h2>
-                                <h3>obras feitas: PLACEHOLDER*</h3>
+                                <h3>obras feitas: ${obradecasa.length}</h3>
                             </td>
                         `;
                         tbody.appendChild(tr);
