@@ -1,5 +1,6 @@
 # Abrir o site
-- instale o arquivo compactado de TUDO
+- clique no botão verde escrito "code <>"
+- clique em "download ZIP"
 - descompacte ele na área de trabalho (de preferência)
 - e abra o arquivo "index"
 - ligue o server de alguma das duas formas abaixo
