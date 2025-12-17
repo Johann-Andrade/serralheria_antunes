@@ -1,2 +1,13 @@
-# serralheria paro no serializer e tem que ver os migrations
-
+# Ligar o server
+- abra o console de comando
+- acesse a pasta fazendo caminho com "cd"
+- cd desktop "entra na area de trabalho"
+- cd serralheria "entra na pasta do site"
+- cd backend "entra na pasta de beackend"
+- python -m venv venv "cria uma nova pasta que serve de server"
+- venv\Scripts\activate "ativa o server"
+- pip install django "instalação para o server"
+- pip install django djangorestframework "instalação para o server"
+- pip install django-cors-headers "instalação para o server"
+- cd serralheria_api "entra na pasta de configuração do server"
+- python manage.py runserver "faz ele rodar"
